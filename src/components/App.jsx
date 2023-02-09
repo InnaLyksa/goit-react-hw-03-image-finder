@@ -101,7 +101,7 @@ export class App extends Component {
   };
 
   render() {
-    const { query, page, loadMore, modalImg, showModal } = this.state;
+    const { query, page, modalImg, showModal } = this.state;
     const {
       handleSearchSubmit,
       onLoadMore,
