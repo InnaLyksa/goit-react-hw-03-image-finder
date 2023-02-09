@@ -1,6 +1,10 @@
-// import { Bars } from 'react-loader-spinner';
+import { InfinitySpin } from 'react-loader-spinner';
+import { WraperLoader } from './Loader.styled';
 
 export const Loader = () => {
-  return <div>Loading...</div>;
-  //   return <Bars color="#3f51b5" height={60} width={60} ariaLabel="loading" />;
+  return (
+    <WraperLoader>
+      <InfinitySpin color="#3381ca" ariaLabel="loading" />;
+    </WraperLoader>
+  );
 };

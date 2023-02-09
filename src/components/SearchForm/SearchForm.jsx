@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { IconButton } from '../IconButton/IconButton';
 import { Form, SearchInput } from './SearchForm.styled';
 import { ReactComponent as LoupeIcon } from '../../icons/loupe.svg';
