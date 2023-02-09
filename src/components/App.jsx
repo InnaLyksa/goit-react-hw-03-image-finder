@@ -7,17 +7,9 @@ import ScrollToTop from 'react-scroll-to-top';
 
 export class App extends Component {
   state = {
-    // fetchQuery: '',
     page: 1,
-    // images: [],
-    // loading: false,
-    // error: null,
     showModal: false,
-    // largeImage: '',
-    // currentImgPerPage: null,
-    // ========
     query: '',
-    // page: 1,
     loadMore: false,
     modalImg: null,
   };
