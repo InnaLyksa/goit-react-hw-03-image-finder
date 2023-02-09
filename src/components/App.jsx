@@ -1,79 +1,19 @@
 import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Searchbar, SearchForm, GalleryImages, Modal } from './index';
+import { Searchbar, SearchForm, GalleryImages, Modal, Button } from './index';
 
 import ScrollToTop from 'react-scroll-to-top';
 
 export class App extends Component {
   state = {
+    // images: [],
     page: 1,
     showModal: false,
     query: '',
     loadMore: false,
     modalImg: null,
   };
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   const prevQuery = prevState.fetchQuery;
-  //   const nextQuery = this.state.fetchQuery;
-
-  //   if (prevQuery !== nextQuery) {
-  //     this.getImagesData();
-  //   }
-
-  //   return;
-  // }
-  // getImagesData = async () => {
-  //   const { fetchQuery, page } = this.state;
-  //   try {
-  //     this.setState({ loading: true });
-
-  //     const { hits, totalHits } = await pixabayApi(fetchQuery, page);
-  //     console.log(hits);
-  //     // console.log(totalHits);
-
-  //     if (totalHits === 0) {
-  //       toast.error(`${fetchQuery} not found ...`);
-  //       // this.setState({ loading: false, currentImgPerPage: null });
-  //       this.setState({ loading: false, images: [] });
-  //       return;
-  //     }
-
-  //     const images = this.imagesArray(hits);
-
-  //     this.setState(prevState => {
-  //       return {
-  //         images: [...prevState.images, ...images],
-  //         currentImgPerPage: hits.length,
-  //         page: prevState.page + 1,
-  //       };
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     this.setState({ error: error.message });
-  //   } finally {
-  //     this.setState({ loading: false });
-  //   }
-  // };
-
-  // imagesArray = data => {
-  //   return data.map(({ id, largeImageURL, tags, webformatURL }) => {
-  //     return { id, largeImageURL, tags, webformatURL };
-  //   });
-  // };
-
-  // saveFetchQuery = searchQuery => {
-  //   console.log(searchQuery);
-  //   if (searchQuery === this.state.fetchQuery) {
-  //     return;
-  //   }
-  //   this.setState({
-  //     fetchQuery: searchQuery,
-  //     images: [],
-  //     page: 1,
-  //   });
-  // };
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
@@ -92,6 +32,13 @@ export class App extends Component {
     this.setState({ query: value, page: 1 });
   };
 
+  onClickloadMore = () => {
+    // console.log(`Load`);
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   onLoadMore = () => {
     this.setState({ loadMore: true });
   };
@@ -101,11 +48,12 @@ export class App extends Component {
   };
 
   render() {
-    const { query, page, modalImg, showModal } = this.state;
+    const { query, page, modalImg, loadMore, showModal } = this.state;
     const {
       handleSearchSubmit,
       onLoadMore,
       offLoadMore,
+      onClickloadMore,
       toggleModal,
       handleOpenModal,
     } = this;
@@ -114,16 +62,13 @@ export class App extends Component {
         <Searchbar>
           <SearchForm SubmitForm={handleSearchSubmit} />
         </Searchbar>
-
         {showModal && <Modal onClose={toggleModal} image={modalImg} />}
-
         <GalleryImages
           imageQuery={query}
           page={page}
           onLoad={onLoadMore}
           offLoad={offLoadMore}
           onImgClick={handleOpenModal}
-          // arrayImages={this.state.images}
         />
         <ScrollToTop
           color="black"
@@ -134,9 +79,8 @@ export class App extends Component {
             background: '#3381ca',
           }}
         />
-
-        {/* {loadMore && <Button onClick={handleButtonClick}>Load more</Button>} */}
-
+        {loadMore && <Button onClick={onClickloadMore}>Load more</Button>}
+        {/* {loadMore && <LoadMore onClick={onClickloadMore} />} */}
         <ToastContainer
           autoClose={1000}
           theme="colored"

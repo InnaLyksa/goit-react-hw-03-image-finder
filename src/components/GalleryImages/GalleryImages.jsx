@@ -50,7 +50,7 @@ export class GalleryImages extends Component {
     const { onImgClick } = this.props;
     return (
       <>
-        <Gallery className="gallery">
+        <Gallery>
           {images.map(image => (
             <ImageGalleryItem
               key={image.id}
@@ -73,25 +73,3 @@ GalleryImages.propTypes = {
   // offLoad: PropTypes.func.isRequired,
   onImgClick: PropTypes.func.isRequired,
 };
-
-// export const GalleryImages = ({ images, onClick }) => {
-//   return (
-//     <Gallery>
-//       {images.map(({ id, largeImageURL, tags, webformatURL }) => {
-//         return (
-//           <ImageGalleryItem
-//             key={id}
-//             largeImage={largeImageURL}
-//             tags={tags}
-//             preview={webformatURL}
-//             onClick={onClick}
-//           />
-//         );
-//       })}
-//     </Gallery>
-//   );
-// };
-
-// GalleryImages.propTypes = {
-//   onClick: PropTypes.func,
-// };
