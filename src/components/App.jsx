@@ -76,7 +76,7 @@ export class App extends Component {
           width="30"
           height="30"
           style={{
-            background: '#3381ca',
+            background: '#14c287',
           }}
         />
         {loadMore && <Button onClick={onClickloadMore}>Load more</Button>}
