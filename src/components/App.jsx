@@ -7,7 +7,6 @@ import ScrollToTop from 'react-scroll-to-top';
 
 export class App extends Component {
   state = {
-    // images: [],
     page: 1,
     showModal: false,
     query: '',
@@ -76,11 +75,11 @@ export class App extends Component {
           width="30"
           height="30"
           style={{
-            background: '#14c287',
+            background: '#088ecc',
           }}
         />
         {loadMore && <Button onClick={onClickloadMore}>Load more</Button>}
-        {/* {loadMore && <LoadMore onClick={onClickloadMore} />} */}
+
         <ToastContainer
           autoClose={1000}
           theme="colored"

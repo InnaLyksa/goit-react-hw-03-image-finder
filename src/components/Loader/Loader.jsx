@@ -4,7 +4,7 @@ import { WraperLoader } from './Loader.styled';
 export const Loader = () => {
   return (
     <WraperLoader>
-      <InfinitySpin color="#14c287" ariaLabel="loading" />;
+      <InfinitySpin color="#088ecc" ariaLabel="loading" />;
     </WraperLoader>
   );
 };

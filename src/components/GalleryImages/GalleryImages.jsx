@@ -69,7 +69,7 @@ export class GalleryImages extends Component {
 GalleryImages.propTypes = {
   imageQuery: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
-  // onLoad: PropTypes.func.isRequired,
-  // offLoad: PropTypes.func.isRequired,
+  onLoad: PropTypes.func.isRequired,
+  offLoad: PropTypes.func.isRequired,
   onImgClick: PropTypes.func.isRequired,
 };

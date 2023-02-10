@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
 export const SearchHeader = styled.header`
-  background-color: #14c287;
+  background-color: #088ecc;
   width: 100%;
 `;
