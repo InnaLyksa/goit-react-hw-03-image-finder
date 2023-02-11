@@ -1,18 +1,87 @@
 import { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar, SearchForm, GalleryImages, Modal, Button } from './index';
+import api from './servises/pixabay-api';
+
+import { Loader } from '../components/Loader/Loader';
 
 import ScrollToTop from 'react-scroll-to-top';
 
 export class App extends Component {
   state = {
+    query: '',
+    pictureData: [],
+    modalImg: null,
+    status: 'idle',
     page: 1,
     showModal: false,
-    query: '',
-    loadMore: false,
-    modalImg: null,
+    IsLoadingMore: false,
   };
+
+  componentDidUpdate(_, prevProps) {
+    const prevSearch = prevProps.query;
+    const nextSearch = this.state.query;
+    const prevPage = prevProps.page;
+    const nextPage = this.state.page;
+
+    if (prevSearch !== nextSearch) {
+      this.loadPicture();
+      this.resetData();
+    }
+    if (nextPage > prevPage) {
+      this.loadPicture();
+    }
+  }
+
+  loadPicture = () => {
+    const { query, page } = this.state;
+    this.setState({ status: 'pending' });
+    api
+      .pixabayApi(query, page)
+      .then(res => {
+        this.setState(prevState => ({
+          pictureData: [
+            ...prevState.pictureData,
+            ...this.mapper(res.data.hits),
+          ],
+          status: 'resolved',
+          IsLoadingMore:
+            prevState.pictureData.length + res.data.hits.length ===
+            res.data.totalHits
+              ? false
+              : true,
+        }));
+        if (res.data.hits.length === 0) {
+          toast.error(`There is no "${query}" images.`);
+        }
+        if (res.data.hits.length < 12 && res.data.hits.length > 0) {
+          toast.info('There is no more images');
+        }
+      })
+      .catch(() => toast.error(`Ups! Something is wrong :(  Try again later!`));
+  };
+
+  mapper = array => {
+    return array.map(({ id, webformatURL, largeImageURL }) => ({
+      id,
+      webformatURL,
+      largeImageURL,
+    }));
+  };
+
+  resetPage() {
+    this.setState({
+      page: 1,
+    });
+  }
+
+  resetData() {
+    this.setState({
+      pictureData: '',
+      IsLoadingMore: false,
+    });
+  }
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
@@ -21,37 +90,25 @@ export class App extends Component {
   };
 
   handleOpenModal = modalImg => {
-    // console.log('Open modal');
-    this.setState({ modalImg }, () => {
-      this.toggleModal();
-    });
+    this.toggleModal();
+    this.setState({ modalImg: modalImg });
   };
 
-  handleSearchSubmit = value => {
-    this.setState({ query: value, page: 1 });
+  handleSearchSubmit = searchQuery => {
+    this.setState({ query: searchQuery, page: 1 });
   };
 
   onClickloadMore = () => {
-    // console.log(`Load`);
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
   };
 
-  onLoadMore = () => {
-    this.setState({ loadMore: true });
-  };
-
-  offLoadMore = () => {
-    this.setState({ loadMore: false });
-  };
-
   render() {
-    const { query, page, modalImg, loadMore, showModal } = this.state;
+    const { pictureData, modalImg, IsLoadingMore, showModal, status } =
+      this.state;
     const {
       handleSearchSubmit,
-      onLoadMore,
-      offLoadMore,
       onClickloadMore,
       toggleModal,
       handleOpenModal,
@@ -59,16 +116,21 @@ export class App extends Component {
     return (
       <div>
         <Searchbar>
-          <SearchForm SubmitForm={handleSearchSubmit} />
+          <SearchForm
+            submitForm={handleSearchSubmit}
+            resetData={this.resetPictures}
+            pictureData={this.state.pictureData}
+          />
         </Searchbar>
         {showModal && <Modal onClose={toggleModal} image={modalImg} />}
-        <GalleryImages
-          imageQuery={query}
-          page={page}
-          onLoad={onLoadMore}
-          offLoad={offLoadMore}
-          onImgClick={handleOpenModal}
-        />
+
+        {pictureData.length > 0 && (
+          <GalleryImages
+            pictureData={pictureData}
+            onClick={handleOpenModal}
+          ></GalleryImages>
+        )}
+
         <ScrollToTop
           color="black"
           smooth
@@ -78,8 +140,9 @@ export class App extends Component {
             background: '#088ecc',
           }}
         />
-        {loadMore && <Button onClick={onClickloadMore}>Load more</Button>}
 
+        {status === 'pending' && <Loader />}
+        {IsLoadingMore && <Button onClick={onClickloadMore}>Load more</Button>}
         <ToastContainer
           autoClose={1000}
           theme="colored"

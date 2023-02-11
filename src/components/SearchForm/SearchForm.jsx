@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { toast } from 'react-toastify';
 import { IconButton } from '../IconButton/IconButton';
@@ -15,7 +16,7 @@ export class SearchForm extends Component {
 
   handleOnSubmit = e => {
     e.preventDefault();
-    const { SubmitForm } = this.props;
+    const { submitForm } = this.props;
     const { searchQuery } = this.state;
 
     if (searchQuery.trim() === '') {
@@ -23,7 +24,7 @@ export class SearchForm extends Component {
 
       return;
     }
-    SubmitForm(searchQuery.toLowerCase());
+    submitForm(searchQuery.toLowerCase());
 
     this.resetForm();
   };
@@ -57,3 +58,7 @@ export class SearchForm extends Component {
     );
   }
 }
+
+SearchForm.propTypes = {
+  submitForm: PropTypes.func.isRequired,
+};
