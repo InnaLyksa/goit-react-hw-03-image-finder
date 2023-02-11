@@ -25,11 +25,7 @@ export class App extends Component {
     const prevPage = prevProps.page;
     const nextPage = this.state.page;
 
-    if (prevSearch !== nextSearch) {
-      this.loadPicture();
-      this.resetData();
-    }
-    if (nextPage > prevPage) {
+    if (prevSearch !== nextSearch || nextPage !== prevPage) {
       this.loadPicture();
     }
   }
@@ -40,6 +36,11 @@ export class App extends Component {
     api
       .pixabayApi(query, page)
       .then(res => {
+        if (res.data.hits.length === 0) {
+          toast.error(`There is no "${query}" images.`);
+          this.setState({ status: 'idle' });
+          return;
+        }
         this.setState(prevState => ({
           pictureData: [
             ...prevState.pictureData,
@@ -52,9 +53,7 @@ export class App extends Component {
               ? false
               : true,
         }));
-        if (res.data.hits.length === 0) {
-          toast.error(`There is no "${query}" images.`);
-        }
+
         if (res.data.hits.length < 12 && res.data.hits.length > 0) {
           toast.info('There is no more images');
         }
@@ -76,13 +75,6 @@ export class App extends Component {
     });
   }
 
-  resetData() {
-    this.setState({
-      pictureData: '',
-      IsLoadingMore: false,
-    });
-  }
-
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
@@ -95,7 +87,15 @@ export class App extends Component {
   };
 
   handleSearchSubmit = searchQuery => {
-    this.setState({ query: searchQuery, page: 1 });
+    this.setState({
+      query: searchQuery,
+      page: 1,
+      pictureData: [],
+      status: 'idle',
+      modalImg: null,
+      showModal: false,
+      IsLoadingMore: false,
+    });
   };
 
   onClickloadMore = () => {
@@ -116,11 +116,7 @@ export class App extends Component {
     return (
       <div>
         <Searchbar>
-          <SearchForm
-            submitForm={handleSearchSubmit}
-            resetData={this.resetPictures}
-            pictureData={this.state.pictureData}
-          />
+          <SearchForm submitForm={handleSearchSubmit} />
         </Searchbar>
         {showModal && <Modal onClose={toggleModal} image={modalImg} />}
 
